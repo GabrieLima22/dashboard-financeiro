@@ -105,7 +105,7 @@ const createMonthTemplate = (monthId: number): MonthData => ({
   })),
 });
 
-const createYearTemplate = (year: number): MonthData[] => {
+const createYearTemplate = (): MonthData[] => {
   const months: MonthData[] = [];
   for (let m = 1; m <= 12; m++) months.push(createMonthTemplate(m));
   return months;
@@ -434,7 +434,7 @@ export default function App() {
       setData(store);
     } catch (err) {
       console.error(err);
-      setData({ [selectedYear]: createYearTemplate(selectedYear) });
+      setData({ [selectedYear]: createYearTemplate() });
     } finally {
       setIsLoading(false);
     }
