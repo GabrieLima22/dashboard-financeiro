@@ -314,7 +314,15 @@ const EditView = ({
       <div className="flex justify-between items-center mb-12">
         <h2 className="text-4xl font-black text-white tracking-tighter">Gestão <span className="text-indigo-500">JML</span></h2>
         <div className="flex gap-3">
-          <Button onClick={() => setView("dashboard")} variant="secondary">Descartar</Button>
+          <Button
+            onClick={() => {
+              setEditForm(selectedMonth.categories.map(cat => ({ ...cat })));
+              setView("dashboard");
+            }}
+            variant="secondary"
+          >
+            Descartar
+          </Button>
           <Button onClick={saveChanges} icon={Save}>Publicar</Button>
         </div>
       </div>
@@ -326,7 +334,7 @@ const EditView = ({
               <input
                 type="number"
                 value={cat.revenue}
-                onChange={e => { const n = [...editForm]; n[i].revenue = Number(e.target.value); setEditForm(n); }}
+                onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, revenue: Number(e.target.value) } : item))}
                 style={{ transition: "none", animation: "none" }}
                 className="bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-indigo-500"
                 placeholder="Receita"
@@ -334,7 +342,7 @@ const EditView = ({
               <input
                 type="number"
                 value={cat.expense}
-                onChange={e => { const n = [...editForm]; n[i].expense = Number(e.target.value); setEditForm(n); }}
+                onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, expense: Number(e.target.value) } : item))}
                 style={{ transition: "none", animation: "none" }}
                 className="bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-rose-400 outline-none focus:border-rose-500"
                 placeholder="Despesa"
@@ -342,7 +350,7 @@ const EditView = ({
               <input
                 type="number"
                 value={cat.targetRevenue}
-                onChange={e => { const n = [...editForm]; n[i].targetRevenue = Number(e.target.value); setEditForm(n); }}
+                onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, targetRevenue: Number(e.target.value) } : item))}
                 style={{ transition: "none", animation: "none" }}
                 className="bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-emerald-400 outline-none focus:border-emerald-500"
                 placeholder="Meta"
@@ -352,7 +360,7 @@ const EditView = ({
               <input
                 type="text"
                 value={cat.revenueNote}
-                onChange={e => { const n = [...editForm]; n[i].revenueNote = e.target.value; setEditForm(n); }}
+                onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, revenueNote: e.target.value } : item))}
                 style={{ transition: "none", animation: "none" }}
                 className="bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-white/80 outline-none focus:border-indigo-500"
                 placeholder="Nota de receita"
@@ -360,7 +368,7 @@ const EditView = ({
               <input
                 type="text"
                 value={cat.expenseNote}
-                onChange={e => { const n = [...editForm]; n[i].expenseNote = e.target.value; setEditForm(n); }}
+                onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, expenseNote: e.target.value } : item))}
                 style={{ transition: "none", animation: "none" }}
                 className="bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-rose-300 outline-none focus:border-rose-500"
                 placeholder="Nota de despesa"
@@ -390,6 +398,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [loginUser, setLoginUser] = useState("");
   const [loginPass, setLoginPass] = useState("");
+  const [saveNotice, setSaveNotice] = useState<"idle" | "success">("idle");
 
   const availableYears = useMemo(() => Object.keys(data).map(Number).sort((a, b) => b - a), [data]);
   const monthsOfYear = data[selectedYear] || [];
@@ -501,6 +510,8 @@ export default function App() {
       copy[selectedYear] = list;
       return copy;
     });
+    setSaveNotice("success");
+    setTimeout(() => setSaveNotice("idle"), 1600);
     setView("detail");
   };
 
@@ -614,7 +625,15 @@ export default function App() {
                 <div className="flex gap-3 mt-6 relative z-10">
                   <Button onClick={() => { setSelectedMonthId(m.id); setView('detail'); }} variant="secondary" className="flex-1 py-3.5" icon={ChevronRight}>Análise</Button>
                   {isAdminMode && (
-                    <Button onClick={() => { setSelectedMonthId(m.id); setEditForm(m.categories); setView('edit'); }} variant="primary" icon={Edit3} />
+                    <Button
+                      onClick={() => {
+                        setSelectedMonthId(m.id);
+                        setEditForm(m.categories.map(cat => ({ ...cat })));
+                        setView("edit");
+                      }}
+                      variant="primary"
+                      icon={Edit3}
+                    />
                   )}
                 </div>
               </Card>
@@ -780,6 +799,17 @@ export default function App() {
           />
         )}
       </main>
+
+      {saveNotice === "success" && (
+        <div className="fixed top-6 right-6 z-[120] animate-in fade-in slide-in-from-right-6 duration-500">
+          <div className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 shadow-[0_10px_30px_rgba(16,185,129,0.25)]">
+            <div className="w-9 h-9 rounded-full bg-emerald-500 flex items-center justify-center">
+              <CheckCircle2 size={20} className="text-white" />
+            </div>
+            <div className="text-xs font-black uppercase tracking-[0.3em]">Dados salvos</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
