@@ -13,8 +13,9 @@ if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
 }
 
 $dsn = sprintf(
-    "mysql:host=%s;dbname=%s;charset=utf8mb4",
+    "mysql:host=%s;%sdbname=%s;charset=utf8mb4",
     $config["db_host"],
+    !empty($config["db_port"]) ? "port=" . $config["db_port"] . ";" : "",
     $config["db_name"]
 );
 
