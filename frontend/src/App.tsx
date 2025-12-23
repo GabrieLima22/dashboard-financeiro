@@ -1,4 +1,4 @@
-﻿import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   LogOut,
   ChevronRight,
@@ -234,7 +234,7 @@ const LoginView = ({
             <span className="block mb-2 text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">User</span>
             <input
               type="text"
-              placeholder="Digite seu usuário"
+              placeholder="Digite seu usuÁrio"
               value={loginUser}
               onChange={(e) => setLoginUser(e.target.value)}
               style={{ transition: "none", animation: "none" }}
@@ -279,7 +279,7 @@ const LoginView = ({
               <div className="w-20 h-20 bg-rose-500 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(244,63,94,0.4)]">
                 <XCircle className="text-white" size={48} />
               </div>
-              <p className="text-rose-400 font-black uppercase tracking-[0.3em] text-xs">Credenciais Inválidas</p>
+              <p className="text-rose-400 font-black uppercase tracking-[0.3em] text-xs">Credenciais InvÁlidas</p>
             </div>
           )}
         </div>
@@ -311,8 +311,10 @@ const EditView = ({
   if (!selectedMonth) return null;
   return (
     <div className="max-w-5xl mx-auto py-12 px-6">
-      <div className="flex justify-between items-center mb-12">
-        <h2 className="text-4xl font-black text-white tracking-tighter">Gestão <span className="text-indigo-500">JML</span></h2>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-10">
+        <div>
+          <h2 className="text-4xl font-black text-white tracking-tighter">Gestão <span className="text-indigo-500">JML</span></h2>
+        </div>
         <div className="flex gap-3">
           <Button
             onClick={() => {
@@ -328,51 +330,52 @@ const EditView = ({
       </div>
       <div className="space-y-4">
         {editForm.map((cat, i) => (
-          <Card key={cat.code} className="p-8 border-white/5 bg-black/40">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-end">
-              <div className="text-sm font-black text-white uppercase">{cat.label}</div>
-              <input
-                type="number"
-                value={cat.revenue}
-                onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, revenue: Number(e.target.value) } : item))}
-                style={{ transition: "none", animation: "none" }}
-                className="bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-white outline-none focus:border-indigo-500"
-                placeholder="Receita"
-              />
-              <input
-                type="number"
-                value={cat.expense}
-                onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, expense: Number(e.target.value) } : item))}
-                style={{ transition: "none", animation: "none" }}
-                className="bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-rose-400 outline-none focus:border-rose-500"
-                placeholder="Despesa"
-              />
-              <input
-                type="number"
-                value={cat.targetRevenue}
-                onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, targetRevenue: Number(e.target.value) } : item))}
-                style={{ transition: "none", animation: "none" }}
-                className="bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-emerald-400 outline-none focus:border-emerald-500"
-                placeholder="Meta"
-              />
+          <Card key={cat.code} className="p-6 md:p-8 border-white/5 bg-black/40">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+              <div className="text-sm font-black text-white uppercase lg:w-40">{cat.label}</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 flex-1">
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Receita</label>
+                  <input
+                    type="number"
+                    value={cat.revenue}
+                    onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, revenue: Number(e.target.value) } : item))}
+                    style={{ transition: "none", animation: "none" }}
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-3 text-white outline-none focus:border-indigo-500"
+                    placeholder="0"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Despesa</label>
+                  <input
+                    type="number"
+                    value={cat.expense}
+                    onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, expense: Number(e.target.value) } : item))}
+                    style={{ transition: "none", animation: "none" }}
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-3 text-rose-300 outline-none focus:border-rose-500"
+                    placeholder="0"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Diferença</label>
+                  <div className={`w-full rounded-2xl px-4 py-3 font-black ${cat.revenue >= cat.expense ? "text-emerald-300 bg-emerald-500/10 border border-emerald-500/20" : "text-rose-300 bg-rose-500/10 border border-rose-500/20"}`}>
+                    {money(cat.revenue - cat.expense)}
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              <input
-                type="text"
-                value={cat.revenueNote}
-                onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, revenueNote: e.target.value } : item))}
-                style={{ transition: "none", animation: "none" }}
-                className="bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-white/80 outline-none focus:border-indigo-500"
-                placeholder="Nota de receita"
-              />
-              <input
-                type="text"
-                value={cat.expenseNote}
-                onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, expenseNote: e.target.value } : item))}
-                style={{ transition: "none", animation: "none" }}
-                className="bg-white/[0.03] border border-white/10 rounded-2xl px-5 py-4 text-rose-300 outline-none focus:border-rose-500"
-                placeholder="Nota de despesa"
-              />
+            <div className="grid grid-cols-1 gap-4 mt-6">
+              <div className="space-y-2">
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Notas</label>
+                <input
+                  type="text"
+                  value={cat.revenueNote}
+                  onChange={e => setEditForm(prev => prev.map((item, idx) => idx === i ? { ...item, revenueNote: e.target.value, expenseNote: e.target.value } : item))}
+                  style={{ transition: "none", animation: "none" }}
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-3 text-white/80 outline-none focus:border-indigo-500"
+                  placeholder="Notas"
+                />
+              </div>
             </div>
           </Card>
         ))}
@@ -407,8 +410,8 @@ export default function App() {
   const monthTotals = (m: MonthData) => {
     const revenue = m.categories.reduce((acc, c) => acc + (c.revenue || 0), 0);
     const expense = m.categories.reduce((acc, c) => acc + (c.expense || 0), 0);
-    const target = m.categories.reduce((acc, c) => acc + (c.targetRevenue || 0), 0);
-    return { revenue, expense, result: revenue - expense, target };
+    const total = revenue + expense;
+    return { revenue, expense, result: revenue - expense, total };
   };
 
   const loadYear = async (year: number) => {
@@ -570,7 +573,7 @@ export default function App() {
           {monthsOfYear.map((m, idx) => {
             const t = monthTotals(m);
             const isPos = t.result >= 0;
-            const totalProgress = t.target > 0 ? t.revenue / t.target : 0;
+          const totalProgress = t.total > 0 ? t.revenue / t.total : 0;
 
             return (
               <Card 
@@ -599,7 +602,8 @@ export default function App() {
 
                 <div className="grid grid-cols-2 gap-3 mb-8 relative z-10">
                   {m.categories.map(cat => {
-                    const catProg = cat.targetRevenue ? (cat.revenue / cat.targetRevenue) : 0;
+                   const catTotal = (cat.revenue || 0) + (cat.expense || 0);
+                   const catProg = catTotal > 0 ? (cat.revenue / catTotal) : 0;
                     return (
                       <div key={cat.code} className="bg-white/[0.03] border border-white/5 rounded-2xl p-3 hover:bg-white/[0.06] transition-all group/item">
                         <div className="flex justify-between items-center mb-1 text-[9px] font-black text-white/30 uppercase">
@@ -813,6 +817,17 @@ export default function App() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
